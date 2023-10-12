@@ -55,27 +55,11 @@ class VideoCapture(cv.VideoCapture):
         return self.get(cv.CAP_PROP_FPS)
 
     def __iter__(self):
-        ok, current = self.read()
-        if not ok:
-            raise ValueError(f"Could not read video.")
-
-        next_ok, next = self.read()
-
-        yield current
-
-        # If next frame is also good
-        if next_ok:
-            current = next
-
-            while True:
-                next_ok, next = self.read()
-
-                yield current
-
-                current = next
-
-                if not next_ok:
-                    return
+        while True:
+            ok, frame = self.read()
+            if not ok:
+                break
+            yield frame
 
 
 @contextmanager
